@@ -1,0 +1,43 @@
+#+TITLE:Build-a-Superstar-Mode Checklist
+
+ * [ ] Change the package header, including
+   + [ ] Author, Maintainer and Copyright
+   + [ ] Homepage
+   + [ ] Package requirements (Minimum ~MODE~ version?)
+   + [ ] Keywords, if necessary (~faces~ will remain accurate)
+ * [ ] Change the first line of the package file.
+ * [ ] ~M-x replace-string~ ~superstar-kit~ with the real package name,
+   for example ~outline-bullets~.
+ * [ ] Rename the file =superstar-kit.el= to the name of your package,
+   from the example above it would be =outline-bullets.el=
+ * [ ] ~M-x replace-string~ ~KITM~ with your mode name, capitalized
+   and without "-mode".  Here: ~KITM~ \to ~Outline Bullets~
+ * [ ] ~M-x replace-string~ the string ~MODE~ with the target mode
+   + The original case was ~MODE~ \to ~Org~
+   + It would be consistent with Emacs usual documentation to replace
+     Mode with the mode name, capitalized, with spaces, but without
+     "mode".  ~org-mode~ \to ~Org~, ~outline-mode~ \to ~Outline~, etc.
+ * [ ]  ~M-x replace-string~ ~M-PKG~ with the name of the package the
+   mode belongs to (~org~ for Org)
+ * [ ]  ~M-x replace-string~ ~M-NAME~ with the name of the mode as a
+   lisp symbol (~org-mode~ for Org)
+ * [ ] ~M-x replace-string~ ~STAR~ with the kind of character used for
+   headings in your target format.
+   + A generic name may be ~heading char~.
+   + Some bits of documentation append an ~s~ to the name to create a
+     plural form (using ~STARs~).  You should of course proofread the
+     docstrings once all automatic changes have been made.
+ * [ ]  Read the README for a step by step introduction what each
+   function and variable does.
+ * [ ] Address the various ~FIXME:~ markers in the file.
+   + [ ] Change the ~:group~ value to the customization group of ~MODE~,
+     or, if it has multiple groups, the one that makes the most sense.
+   + [ ] Change the regex in ~<your package>--update-font-lock-keywords~
+     such that it matches an arbitrary headline (but nothing else).
+     If you want to use the default prettify functions, have the final
+     character in its own numbered group *1*, the rest being
+     non-greedily matched by a numbered group *2*.  Everything in group
+     *2* can be hidden away using ~<your package>-remove-leading-stars~
+   + [ ] Change the regex in ~<your package>--unprettify-hbullets~.  It
+     can be the same as the above, or a more compact one (since you
+     won't require groups).
