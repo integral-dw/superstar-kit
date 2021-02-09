@@ -33,7 +33,8 @@
   :group 'text)
 
 (define-derived-mode grok-mode text-mode "Grok"
-  "Set major mode for editing Grok files.")
+  "Set major mode for editing Grok files."
+  (font-lock-mode 1))
 
 (provide 'grok)
 ;;; grok.el ends here
