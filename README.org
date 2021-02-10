@@ -2,32 +2,35 @@
 #+STARTUP: showeverything
 
 * Contents
-  * [[About][About]] :: Start here.
-    + [[This "Package" is NOT a Package][This "Package" is NOT a Package]] :: Mission statement.
-  * [[A Guided Tour][A Guided Tour]] :: How to use this template explained using an imaginary
+  * *[[#about][About]]:* Start here.
+    + *[[#this-package-is-not-a-package][This "Package" is NOT a Package]]:* Mission statement.
+  * *[[#a-guided-tour][A Guided Tour]]:* How to use this template explained using an imaginary
     example.
-    + [[Defining a Minor Mode][Defining a Minor Mode]] ::
-    + [[Setting up Font Lock][Setting up Font Lock]] ::
-    + [[Defining Font Lock Keywords][Defining Font Lock Keywords]] ::
-    + [[#Prettifiers and compose-region][Prettifiers and compose-region]] ::
-      - [[#The Quintessential Prettifier: --prettify-main-hbullet][The Quintessential Prettifier: --prettify-main-hbullet]]
-      - [[More Prettifiers][More Prettifiers]]
-    + [[Custom Variables: Interfacing to the End User][Custom Variables: Interfacing to the End User]] ::
-      - [[Advanced Custom Functionality][Advanced Custom Functionality]] ::
-    + [[Hiding and the Invisibility Spec][Hiding and the Invisibility Spec]] ::
-    + [[Disabling a Mode: Cleaning up][Disabling a Mode: Cleaning up]] ::
-  * [[Extending the Minor Mode][Extending the Minor Mode]] :: Extending the bare-bones minor mode (an
+    + *[[#defining-a-minor-mode][Defining a Minor Mode]]:*
+    + *[[#setting-up-font-lock][Setting up Font Lock]]:*
+    + *[[#defining-font-lock-keywords][Defining Font Lock Keywords]]:*
+    + *[[#prettifiers-and-compose-region][Prettifiers and compose-region]]:*
+      - *[[#the-quintessential-prettifier:---prettify-main-hbullet][The Quintessential Prettifier: --prettify-main-hbullet]]*
+      - *[[#more-prettifiers][More Prettifiers]]*
+    + *[[#custom-variables-interfacing-to-the-end-user][Custom Variables: Interfacing to the End User]]:*
+      - *[[#advanced-custom-functionality][Advanced Custom Functionality]]:*
+    + *[[#hiding-and-the-invisibility-spec][Hiding and the Invisibility Spec]]:*
+    + *[[#disabling-a-mode-cleaning-up][Disabling a Mode: Cleaning up]]:*
+  * *[[#extending-the-minor-mode][Extending the Minor Mode]]:* Extending the bare-bones minor mode (an
     example).
-    + [[Beginning with a Vision][Beginning with a Vision]] ::
-    + [[Defining a New Keyword][Defining a New Keyword]] ::
-    + [[Prettifiers, Accessors, Variables][Prettifiers, Accessors, Variables]] ::
-    + [[Faces][Faces]] ::
-    + [[Cleaning up][Cleaning up]] ::
-  * [[Quick Reference][Quick Reference]] :: Where each symbol is first used in the guided tour.
-  * [[NEWS][NEWS]] :: Updates of note.
-  * [[Archive][Archive]] :: Yesterday's NEWS.
+    + *[[#beginning-with-a-vision][Beginning with a Vision]]:*
+    + *[[#defining-a-new-keyword][Defining a New Keyword]]:*
+    + *[[#prettifiers-accessors-variables][Prettifiers, Accessors, Variables]]:*
+    + *[[#faces][Faces]]:*
+    + *[[#cleaning-up][Cleaning up]]:*
+  * *[[#quick-reference][Quick Reference]]:* Where each symbol is first used in the guided tour.
+  * *[[#news][NEWS]]:* Updates of note.
+  * *[[#archive][Archive]]:* Yesterday's NEWS.
 
 * About
+  :PROPERTIES:
+  :CUSTOM_ID: about
+  :END:
   With the success of [[https://github.com/integral-dw/org-superstar-mode][Org Superstar]] it is pretty clear that there is a demand
   for eye candy in Outline-related modes.  A demand I won't be able to satisfy
   on my own.  Superstar simply does not have the tools to generalize to other
@@ -42,6 +45,9 @@
   you are done, because\dots
 
 ** This "Package" is NOT a Package
+   :PROPERTIES:
+   :CUSTOM_ID: this-package-is-not-a-package
+   :END:
    What do I mean by this? Well, =superstar-kit.el= /looks/ like a package.  It
    /behaves/ like a package, mostly, if loaded.  Tools like ~package-lint~,
    ~checkdoc~, and ~flycheck~ have no complaints.  So why isn't it on MELPA?
@@ -73,6 +79,9 @@
      this approach is roughly capable of.
 
 * A Guided Tour
+  :PROPERTIES:
+  :CUSTOM_ID: a-guided-tour
+  :END:
   In this section I will explain /how/ a mode derived from this starter kit
   actually works, so you can really make it your own.  I will only brush on
   topics that are better explained elsewhere (such as how to define minor modes
@@ -88,6 +97,9 @@
   they should start reading for a specific defined symbol, see the [[Quick Reference][quick reference]].
 
 ** Defining a Minor Mode
+   :PROPERTIES:
+   :CUSTOM_ID: defining-a-minor-mode
+   :END:
    Our end goal is making a minor mode for some Outline-like mode.  For that we
    need to define one using ~define-minor-mode~.
    #+begin_src elisp
@@ -156,6 +168,9 @@
    Conversely, a value of nil tells the mode to clean up after itself and exit.
 
 ** Setting up Font Lock
+   :PROPERTIES:
+   :CUSTOM_ID: setting-up-font-lock
+   :END:
    Font Lock is the minor mode responsible for syntax highlighting in Emacs.  It
    will handle most of the low-level manipulations in our buffer and will locate
    our syntax elements (headlines) we want to prettify.  Naively, all we (or in
@@ -207,6 +222,9 @@
    Lock, update the keywords and redraws the buffer.
 
 ** Defining Font Lock Keywords
+   :PROPERTIES:
+   :CUSTOM_ID: defining-font-lock-keywords
+   :END:
    [[info:elisp#Search-based Fontification][Font Lock keywords]] are simple lists which come in a variety of forms, fully
    documented in a corresponding info node.  We will only use a small subset of
    what keywords are capable of and restrict ourselves to the format
@@ -278,7 +296,7 @@
 
 ** Prettifiers and ~compose-region~
    :PROPERTIES:
-   :CUSTOM_ID: Prettifiers and compose-region
+   :CUSTOM_ID: prettifiers-and-compose-region
    :END:
    A /prettifier/, in my nomenclature, is a function that visually modifies a
    region from within Font Lock /beyond/ the [[info:Elisp#Faces][face]] properties.  Consequently,
@@ -300,7 +318,7 @@
 
 *** The Quintessential Prettifier: ~--prettify-main-hbullet~
     :PROPERTIES:
-    :CUSTOM_ID: The Quintessential Prettifier: --prettify-main-hbullet
+    :CUSTOM_ID: the-quintessential-prettifier:---prettify-main-hbullet
     :END:
     This is the most basic (and likely most iconic) prettifier.
     #+begin_src emacs-lisp
@@ -325,6 +343,9 @@
     what remains is storing and accessing data.
 
 *** More Prettifiers
+    :PROPERTIES:
+    :CUSTOM_ID: more-prettifiers
+    :END:
     To fully complete this section it is necessary to also look at the other
     default prettifier provided by this package.  This one is a little more
     involved, as leading characters have to be composed one by one,
@@ -350,6 +371,9 @@
     every kind of prettifier there is a face, in this case ~grok-bullets-leading~.
 
 ** Custom Variables: Interfacing to the End User
+   :PROPERTIES:
+   :CUSTOM_ID: custom-variables-interfacing-to-the-end-user
+   :END:
    While prettifiers handle putting pretty symbols on the screen, we still
    require data to hold them (and functions to access them).  I also like to
    define a nice custom interface, which also comes with the benefit of
@@ -460,6 +484,9 @@
    bullet is a character and works on terminals).
 
 *** Advanced Custom Functionality
+    :PROPERTIES:
+    :CUSTOM_ID: advanced-custom-functionality
+    :END:
    The custom interface allows us to do more than just specify a type for a
    given variable.  We can even define specialized setter functions and raise
    errors depending on user input.  We can for example mirror the load-up
@@ -509,6 +536,9 @@
    #+end_src
 
 ** Hiding and the Invisibility Spec
+   :PROPERTIES:
+   :CUSTOM_ID: hiding-and-the-invisibility-spec
+   :END:
    With prettifiers and their internals and interfaces out of the way, there is
    only one more aspect to the Font Lock code that has not been looked at in
    greater detail.
@@ -564,6 +594,9 @@
    some cleanup should the mode be disabled or restarted.
 
 ** Disabling a Mode: Cleaning up
+   :PROPERTIES:
+   :CUSTOM_ID: disabling-a-mode-cleaning-up
+   :END:
    Now that the worst part of defining the mode is over, all that is left are
    cleanup functions.  First, the mode itself needs to handle the case of
    (~grok-bullets-mode~) being nil.
@@ -602,12 +635,18 @@
    ~(re-search-forward "^~+ " nil t)~.
 
 * Extending the Minor Mode
+  :PROPERTIES:
+  :CUSTOM_ID: extending-the-minor-mode
+  :END:
   After consulting the =CHECKLIST= file your minor mode should already work
   decently and compile without warning.  However, the mode is rather bare bones,
   which is why I want to give a minor example for how to implement a new
   feature.  For this reason, we will now take a look at our hypothetical Hubert
   Grokbold implementing a new feature for his ~grok-bullets~ mode.
 ** Beginning with a Vision
+   :PROPERTIES:
+   :CUSTOM_ID: beginning-with-a-vision
+   :END:
    Suppose Grok mode supports a fancy type of text block, called grok blocks.
    Each line of a grok block begins with an integer enclosed in square brackets,
    followed by a =>=, like this:
@@ -627,6 +666,9 @@
    * He wants to highlight important lines and de-emphasize unimportant ones.
 
 ** Defining a New Keyword
+   :PROPERTIES:
+   :CUSTOM_ID: defining-a-new-keyword
+   :END:
    How does one accomplish that?  It becomes clear that three components need to
    be distinguished, =[1]=, =>=, and the rest of the line.
    #+begin_src elisp
@@ -648,6 +690,9 @@
                 (3 (grok-bullets--gb-face))))))
    #+end_src
 ** Prettifiers, Accessors, Variables
+   :PROPERTIES:
+   :CUSTOM_ID: prettifiers-accessors-variables
+   :END:
     Hubert requires two prettifiers and one function that simply obtains the
     face for the remaining line.  Since everything is already nicely packaged
     away into neat groups, working on them is comparably easy.
@@ -747,6 +792,9 @@
         'grok-bullets-priority-icon)
     #+end_src
 ** Faces
+   :PROPERTIES:
+   :CUSTOM_ID: faces
+   :END:
    Defining simple faces is comparably straightforward, although it is best to
    still read up on it, both the [[info:Elisp#Faces][info node]] as well as the documentation of
    ~defface~ could prove useful here.  Hubert believes that the best default is a
@@ -792,6 +840,9 @@
    #+end_src
 
 ** Cleaning up
+   :PROPERTIES:
+   :CUSTOM_ID: cleaning-up
+   :END:
    For each new set of /prettifiers/ there needs to be a corresponding
    /unprettifier/ in case the user wants to disable your mode.  Consequently,
    Hubert needs to implement an unprettifier for Grok blocks to have the mode
@@ -824,6 +875,9 @@
    With this, the mode is finally complete again and ready for shipping (after
    some thorough testing, of course).
 * Quick Reference
+  :PROPERTIES:
+  :CUSTOM_ID: quick-reference
+  :END:
   For the impatient, here is a list of all symbols with their original names, in
   order of appearance in the [[A Guided Tour][guided tour]] above.  Implementation of functions is
   often addressed later in dedicated sections, with the first mention usually
@@ -865,8 +919,14 @@
     + ~superstar-kit-restart~ (interactive function)
 
 * NEWS
+  :PROPERTIES:
+  :CUSTOM_ID: news
+  :END:
 
 * Archive
+  :PROPERTIES:
+  :CUSTOM_ID: archive
+  :END:
 
   #  LocalWords:  Grokbold fontification prettifiers prettifier accessors cdr
   #  LocalWords:  accessor unprettifier
