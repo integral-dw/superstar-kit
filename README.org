@@ -10,7 +10,7 @@
     + *[[#setting-up-font-lock][Setting up Font Lock]]:*
     + *[[#defining-font-lock-keywords][Defining Font Lock Keywords]]:*
     + *[[#prettifiers-and-compose-region][Prettifiers and compose-region]]:*
-      - *[[#the-quintessential-prettifier:---prettify-main-hbullet][The Quintessential Prettifier: --prettify-main-hbullet]]*
+      - *[[#the-quintessential-prettifier---prettify-main-hbullet][The Quintessential Prettifier: --prettify-main-hbullet]]*
       - *[[#more-prettifiers][More Prettifiers]]*
     + *[[#custom-variables-interfacing-to-the-end-user][Custom Variables: Interfacing to the End User]]:*
       - *[[#advanced-custom-functionality][Advanced Custom Functionality]]:*
@@ -318,7 +318,7 @@
 
 *** The Quintessential Prettifier: ~--prettify-main-hbullet~
     :PROPERTIES:
-    :CUSTOM_ID: the-quintessential-prettifier:---prettify-main-hbullet
+    :CUSTOM_ID: the-quintessential-prettifier---prettify-main-hbullet
     :END:
     This is the most basic (and likely most iconic) prettifier.
     #+begin_src emacs-lisp
