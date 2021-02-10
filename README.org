@@ -1,5 +1,31 @@
-#+TITLE:superstar-kit: A quickstart template for *-bullet modes
+#+TITLE:superstar-kit: A Quickstart Template for *-bullet Modes
 #+STARTUP: showeverything
+
+* Contents
+  * [[About][About]] :: Start here.
+    + [[This "Package" is NOT a Package][This "Package" is NOT a Package]] :: Mission statement.
+  * [[A Guided Tour][A Guided Tour]] :: How to use this template explained using an imaginary
+    example.
+    + [[Defining a Minor Mode][Defining a Minor Mode]] ::
+    + [[Setting up Font Lock][Setting up Font Lock]] ::
+    + [[Defining Font Lock Keywords][Defining Font Lock Keywords]] ::
+    + [[#Prettifiers and compose-region][Prettifiers and compose-region]] ::
+      - [[#The Quintessential Prettifier: --prettify-main-hbullet][The Quintessential Prettifier: --prettify-main-hbullet]]
+      - [[More Prettifiers][More Prettifiers]]
+    + [[Custom Variables: Interfacing to the End User][Custom Variables: Interfacing to the End User]] ::
+      - [[Advanced Custom Functionality][Advanced Custom Functionality]] ::
+    + [[Hiding and the Invisibility Spec][Hiding and the Invisibility Spec]] ::
+    + [[Disabling a Mode: Cleaning up][Disabling a Mode: Cleaning up]] ::
+  * [[Extending the Minor Mode][Extending the Minor Mode]] :: Extending the bare-bones minor mode (an
+    example).
+    + [[Beginning with a Vision][Beginning with a Vision]] ::
+    + [[Defining a New Keyword][Defining a New Keyword]] ::
+    + [[Prettifiers, Accessors, Variables][Prettifiers, Accessors, Variables]] ::
+    + [[Faces][Faces]] ::
+    + [[Cleaning up][Cleaning up]] ::
+  * [[Quick Reference][Quick Reference]] :: Where each symbol is first used in the guided tour.
+  * [[NEWS][NEWS]] :: Updates of note.
+  * [[Archive][Archive]] :: Yesterday's NEWS.
 
 * About
   With the success of [[https://github.com/integral-dw/org-superstar-mode][Org Superstar]] it is pretty clear that there is a demand
@@ -15,16 +41,16 @@
   this "package" (or rather, your copy of it) won't exist anymore by the time
   you are done, because\dots
 
-** This "package" is NOT a package
+** This "Package" is NOT a Package
    What do I mean by this? Well, =superstar-kit.el= /looks/ like a package.  It
    /behaves/ like a package, mostly, if loaded.  Tools like ~package-lint~,
    ~checkdoc~, and ~flycheck~ have no complaints.  So why isn't it on MELPA?
    *Because it would make no sense.* The most crucial elements that make a mode
    like this work are /placeholders/.  The blanks still need to be filled in with
-   specifics of a mode.  The placeholders are documented in a handy [[file:CHECKLIST.org][checklist]],
-   and many changes can be made semi-automatically. But not all.  This is also
-   by design, a design that in many ways is governed strongly by what
-   ~superstar-kit~ is *not*.
+   specifics of a mode.  The placeholders are documented in a handy [[file:CHECKLIST.org][checklist]]
+   (=CHECKLIST.org=), and many changes can be made semi-automatically. But not
+   all.  This is also by design, a design that in many ways is governed strongly
+   by what ~superstar-kit~ is *not*.
 
    * It is NOT a dependency :: This is important. You don't ~require~ this file.
      You take it, you edit it, you change the name.  It's really just a template
@@ -33,11 +59,11 @@
      Org Superstar, with all its features, is over 630 LOC (lines of code) and
      growing.  It has legacy code.  It has compatibility code.  Bells and
      whistles.  It has lots of special cases to integrate well with Org.
-     Superstar Kit at the time of writing has 264 LOC, and will hopefully shrink
-     further.  It also has none of that.  By the time you are done adding the
-     complexities and features for /your/ use case the time and effort invested
-     into /that/ will outweigh whatever any more advanced starter kit could have
-     conceivably saved you.  No point in dwelling over starting off low-tech.
+     Superstar Kit at the time of writing has 243 LOC.  It also has none of
+     that.  By the time you are done adding the complexities and features for
+     /your/ use case the time and effort invested into /that/ will outweigh whatever
+     a more advanced starter kit could have conceivably saved you.  No point in
+     dwelling over starting off low-tech.
    * It is NOT "feature complete" ::
      Superstar Kit merely "implements" fancy headline bullets on its own.
      That's basically it.  No item bullets, no syntax checks, nothing.  Instead,
@@ -46,7 +72,7 @@
      do a couple of things with fancy headline bullets.  Enough to show what
      this approach is roughly capable of.
 
-* A guided Tour
+* A Guided Tour
   In this section I will explain /how/ a mode derived from this starter kit
   actually works, so you can really make it your own.  I will only brush on
   topics that are better explained elsewhere (such as how to define minor modes
@@ -59,9 +85,9 @@
   *Side Note:* I added some links to info nodes referring to the documentation of
   certain Emacs internals, but they won't show up on GitHub, so opening the
   README in Emacs has benefits.  Also, for those who just want to know where
-  they should start reading for a specific defined symbol, see the [[Quick reference][quick reference]].
+  they should start reading for a specific defined symbol, see the [[Quick Reference][quick reference]].
 
-** Defining a minor mode
+** Defining a Minor Mode
    Our end goal is making a minor mode for some Outline-like mode.  For that we
    need to define one using ~define-minor-mode~.
    #+begin_src elisp
@@ -135,7 +161,8 @@
    our syntax elements (headlines) we want to prettify.  Naively, all we (or in
    our case, Hubert) would hence need to do is pass a list of things for Font
    Lock to do (conditionally), and tell Font Lock to stop highlighting these
-   things when the mode stops.
+   things when the mode stops.  This of course implies that our major mode *uses
+   Font Lock* in the first place.
    #+begin_src elisp
      (define-minor-mode grok-bullets-mode
        "Use UTF8 bullets for headlines and plain lists."
@@ -179,7 +206,7 @@
    The mode now cleans up whatever previous information we may have fed to Font
    Lock, update the keywords and redraws the buffer.
 
-** Defining Font Lock keywords
+** Defining Font Lock Keywords
    [[info:elisp#Search-based Fontification][Font Lock keywords]] are simple lists which come in a variety of forms, fully
    documented in a corresponding info node.  We will only use a small subset of
    what keywords are capable of and restrict ourselves to the format
@@ -192,11 +219,11 @@
      (SUBEXP FACESPEC [OVERRIDE [LAXMATCH]])
    #+end_src
    Where =SUBEXP= is an integer essentially corresponding to the number of a
-   numbered [[info:Elisp#Regexp Backslash][group]]^{}^{a)}, =FACESPEC= is an /expression/ whose value specifies the face to
+   numbered [[info:Elisp#Regexp Backslash][group]]^{}^{a)}, =FACESPEC= is an /expression/ whose value specifies the [[info:Elisp#Faces][face]] to
    use (a symbol) and =OVERRIDE= and =LAXMATCH= are optional flags.  To reiterate:
    =FACESPEC= is an /expression/ which will be evaluated every time =REGEX= is
    matched.  *This is the core mechanism used by modes derived from this
-   template.* =OVERRIDE= governs whether aspects of existing fontification can be
+   template*.  =OVERRIDE= governs whether aspects of existing fontification can be
    overridden.  A value of ~prepend~ works intuitively by merging properties of
    the face with existing fontification, taking precedence.  Let us now look at
    the code.
@@ -250,6 +277,9 @@
    entire match of =REGEX=.
 
 ** Prettifiers and ~compose-region~
+   :PROPERTIES:
+   :CUSTOM_ID: Prettifiers and compose-region
+   :END:
    A /prettifier/, in my nomenclature, is a function that visually modifies a
    region from within Font Lock /beyond/ the [[info:Elisp#Faces][face]] properties.  Consequently,
    prettifiers are the abstractions doing the actual heavy lifting through Font
@@ -268,7 +298,10 @@
    used from a terminal.  This is why special care has to be taken when dealing
    with terminal displays, as we will see later.
 
-*** The quintessential prettifier: ~--prettify-main-hbullet~
+*** The Quintessential Prettifier: ~--prettify-main-hbullet~
+    :PROPERTIES:
+    :CUSTOM_ID: The Quintessential Prettifier: --prettify-main-hbullet
+    :END:
     This is the most basic (and likely most iconic) prettifier.
     #+begin_src emacs-lisp
       (defun grok-bullets--prettify-main-hbullet ()
@@ -291,7 +324,7 @@
     is of no concern to us, or interfaces to options exposed to the user.  Hence
     what remains is storing and accessing data.
 
-*** More prettifiers
+*** More Prettifiers
     To fully complete this section it is necessary to also look at the other
     default prettifier provided by this package.  This one is a little more
     involved, as leading characters have to be composed one by one,
@@ -316,7 +349,7 @@
     is a corresponding accessor, in this case ~grok-bullets--lbullet~, and for
     every kind of prettifier there is a face, in this case ~grok-bullets-leading~.
 
-** Custom variables: interfacing to the end user
+** Custom Variables: Interfacing to the End User
    While prettifiers handle putting pretty symbols on the screen, we still
    require data to hold them (and functions to access them).  I also like to
    define a nice custom interface, which also comes with the benefit of
@@ -426,7 +459,7 @@
    the regular bullet if there is no need for a fallback (that is, if the main
    bullet is a character and works on terminals).
 
-*** Advanced custom functionality
+*** Advanced Custom Functionality
    The custom interface allows us to do more than just specify a type for a
    given variable.  We can even define specialized setter functions and raise
    errors depending on user input.  We can for example mirror the load-up
@@ -475,7 +508,7 @@
            text-field)))
    #+end_src
 
-** Hiding and the invisibility spec
+** Hiding and the Invisibility Spec
    With prettifiers and their internals and interfaces out of the way, there is
    only one more aspect to the Font Lock code that has not been looked at in
    greater detail.
@@ -530,7 +563,7 @@
    This completes all features available to the basic mode.  All that remains is
    some cleanup should the mode be disabled or restarted.
 
-** Disabling a mode: cleaning up
+** Disabling a Mode: Cleaning up
    Now that the worst part of defining the mode is over, all that is left are
    cleanup functions.  First, the mode itself needs to handle the case of
    (~grok-bullets-mode~) being nil.
@@ -568,48 +601,272 @@
    Font Lock keyword, but since we don't need groups we get away just using
    ~(re-search-forward "^~+ " nil t)~.
 
+* Extending the Minor Mode
+  After consulting the =CHECKLIST= file your minor mode should already work
+  decently and compile without warning.  However, the mode is rather bare bones,
+  which is why I want to give a minor example for how to implement a new
+  feature.  For this reason, we will now take a look at our hypothetical Hubert
+  Grokbold implementing a new feature for his ~grok-bullets~ mode.
+** Beginning with a Vision
+   Suppose Grok mode supports a fancy type of text block, called grok blocks.
+   Each line of a grok block begins with an integer enclosed in square brackets,
+   followed by a =>=, like this:
+   #+begin_src fundamental
+     [0]> Quote of the day: "Stay hydrated, this is a threat."
+     [1]> Buy eggs, milk, cereal, flour, toothpaste,
+     [1]> 4 chicken thighs, 500g breast, celery.
+     [2]> Remember to look up the tampon brand in the bathroom.
+     [3]> Dentist appointment next week => calendar!
+     [1]> Also, remember to take the trash out.
+   #+end_src
+   Possibly, the integers represent the importance of the note.  Hubert wants to
+   prettify grok blocks.  He imagines the following:
+   * Instead of =[1]=, he would like a symbol depending on the integer.
+   * Instead of =>=, he would like some other character.
+   * A face for both.
+   * He wants to highlight important lines and de-emphasize unimportant ones.
 
-* Quick reference
+** Defining a New Keyword
+   How does one accomplish that?  It becomes clear that three components need to
+   be distinguished, =[1]=, =>=, and the rest of the line.
+   #+begin_src elisp
+     (defun grok-bullets--update-font-lock-keywords ()
+       "Set ‘grok-bullets--font-lock-keywords’ to reflect current settings.
+     You should not call this function to avoid confusing this mode’s
+     cleanup routines."
+       (setq grok-bullets--font-lock-keywords
+             `(("^\\(?2:~*?\\)\\(?1:~\\) "
+                (1 (grok-bullets--prettify-main-hbullet) prepend)
+                ,@(unless grok-bullets-remove-leading-chars
+                    '((2 (grok-bullets--prettify-leading-hbullets)
+                         t)))
+                ,@(when grok-bullets-remove-leading-chars
+                    '((2 (grok-bullets--make-invisible 2)))))
+               ("^\\(?1:\\[[0-9]+\\]\\)\\(?2:>\\)\\(?3: .*\\)$"
+                (1 (grok-bullets--prettify-gb-priority))
+                (2 (grok-bullets--prettify-gb-delim))
+                (3 (grok-bullets--gb-face))))))
+   #+end_src
+** Prettifiers, Accessors, Variables
+    Hubert requires two prettifiers and one function that simply obtains the
+    face for the remaining line.  Since everything is already nicely packaged
+    away into neat groups, working on them is comparably easy.
+    #+begin_src elisp
+      (defun grok-bullets--prettify-gb-priority ()
+        "Prettify the priority of a Grok block line."
+        (let ((priority (grok-bullets--priority)))
+          (compose-region (match-beginning 1) (match-end 1)
+                          (grok-bullets--gb-icon priority)))
+        'grok-bullets-priority-icon)
+    #+end_src
+    What remains to do for this prettifier are defining the function to compute
+    the priority, an accessor function obtaining the correct icon and a face.
+    Hubert looks at how bullets are stored in his mode and copies the approach.
+    However, it makes no sense to be able to cycle through icons for higher
+    priorities, so the last one just repeats.
+    #+begin_src elisp
+      (defcustom grok-bullets-priority-icons
+        '(("　" ?\s) ("　○" ?○) ("　❔" ??) ("　❗" ?!))
+        "List of icons used in Grok blocks.
+      It can contain any number of icons, the Nth entry usually
+      corresponding to the icon used for priority N.
+
+      Every entry in this list can either be a character or a list.
+      Characters are used as simple, verbatim replacements of the
+      headline character for every display (be it graphical or
+      terminal).  If the list element is a list, it should be of the
+      general form
+      \(COMPOSE-STRING CHARACTER)
+
+      where COMPOSE-STRING should be a string according to the rules of
+      the third argument of ‘compose-region’.  It will be used to
+      compose the specific priority icon.  CHARACTER is the fallback
+      character used in terminal displays, where composing characters
+      cannot be relied upon.
+
+      You should re-enable Grok Bullets after changing this variable
+      for your changes to take effect."
+        :group 'grok-bullets
+        :type '(repeat (choice
+                        (character :value ?!
+                                   :format "Icon: %v\n"
+                                   :tag "Simple icon")
+                        (list :tag "Advanced string and fallback"
+                              (string :value "!"
+                                      :format "String of characters to compose: %v")
+                              (character :value ?!
+                                         :format "Fallback character for terminal: %v\n")))))
+    #+end_src
+    Next would be the function accessing the priority information, which simply
+    has to strip the surrounding brackets and turn the string to an integer, and
+    the function to access the custom variable.
+    #+begin_src elisp
+      (defun grok-bullets--priority ()
+        "Return the priority of the Grok block line."
+        (let ((token (match-string 1)))
+          (string-to-number
+           (substring token 1 (1- (length token))))))
+
+      (defun grok-bullets--gb-icon (priority)
+        "Obtain Grok block icon for the given PRIORITY.
+
+      If PRIORITY is greater than the number of icons specified in
+      ‘grok-bullets-priority-icons’, return the highest priority
+      icon."
+        (let* ((priority (min priority
+                              (1- (length grok-bullets-priority-icons))))
+               (entry (elt grok-bullets-priority-icons priority)))
+          (cond
+           ((characterp entry)
+            entry)
+           ((display-graphic-p)
+            (elt entry 0))
+           (t
+            (elt entry 1)))))
+    #+end_src
+    Prettifying the delimiter is trivial in comparison.
+    #+begin_src elisp
+      (defcustom grok-bullets-gb-delimiter ?»
+        "Character to delimit Grok block lines.
+      This variable is a character replacing the default greater-than
+      in terminal displays instead of ‘grok-bullets-leading-bullet’.
+
+      You should re-enable Grok Bullets after changing this
+      variable for your changes to take effect."
+        :group 'grok-bullets
+        :type '(character :tag "Character to display"
+                          :format "\n%t: %v\n"
+                          :value ?>))
+
+      ;; ...
+
+      (defun grok-bullets--prettify-gb-delim ()
+        "Prettify the delimiter of a Grok block line."
+        (compose-region (match-beginning 2) (match-end 2)
+                        grok-bullets-gb-delimiter)
+        'grok-bullets-priority-icon)
+    #+end_src
+** Faces
+   Defining simple faces is comparably straightforward, although it is best to
+   still read up on it, both the [[info:Elisp#Faces][info node]] as well as the documentation of
+   ~defface~ could prove useful here.  Hubert believes that the best default is a
+   subtle default, so he just inherits the default face.
+   #+begin_src elisp
+     (defface grok-bullets-priority-icon
+       '((default . (:inherit default)))
+       "Face used to display prettified Grok block icons."
+       :group 'grok-bullets)
+   #+end_src
+   For the final necessary element (a function providing priority-dependent
+   faces) Hubert wants to try something more extravagant.  Instead of creating a
+   fixed number of faces and potentially providing the user with some flags to
+   modify the mode's behavior he decides to mirror the way bullets are stored.
+   This is possible because faces don't /have/ to be symbols.  Instead, property
+   lists can be used.  These /anonymous faces/ can be stored in a list.  The face
+   function is then consequently straightforward.
+   #+begin_src elisp
+     (defcustom grok-bullets-priority-faces
+       '((:foreground "gray70" :slant italic)
+         default
+         (:weight bold)
+         (:weight bold :foreground "red3"))
+       "Faces to use for Grok block lines of a given priority.
+
+     Should a Grok block line have a higher priority than the highest
+     specified by this variable, the highest available is used."
+       :group 'grok-bullets
+       :type '(repeat
+               (choice :tag "Face spec"
+                       (face :value default)
+                       (plist :key-type (symbol :tag "Property")
+                              :tag "Face properties"))))
+     ;; ...
+
+     (defun grok-bullets--gb-face ()
+       "Return the appropriate face to use for the given priority."
+       (let* ((priority (grok-bullets--priority))
+              (facespec (elt grok-bullets-priority-faces
+                             priority)))
+         (or facespec
+             (last grok-bullets-priority-faces))))
+   #+end_src
+
+** Cleaning up
+   For each new set of /prettifiers/ there needs to be a corresponding
+   /unprettifier/ in case the user wants to disable your mode.  Consequently,
+   Hubert needs to implement an unprettifier for Grok blocks to have the mode
+   exit cleanly (as it should).
+   #+begin_src elisp
+     (defun grok-bullets--unprettify-gb ()
+       "Revert visual tweaks made to grok blocks in current buffer."
+       (save-excursion
+         (goto-char (point-min))
+         (while (re-search-forward "^\\[[0-9]+\\]> " nil t)
+           (decompose-region (match-beginning 0) (match-end 0)))))
+
+     ;; ...
+
+     (define-minor-mode grok-bullets-mode
+       ;; ... (nothing new)
+       (cond
+        ;; Set up Grok Bullets.
+        (grok-bullets-mode
+         ;; ...
+         )
+        ;; Clean up and exit.
+        (t
+         (remove-from-invisibility-spec '(grok-bullets-hide))
+         (font-lock-remove-keywords nil grok-bullets--font-lock-keywords)
+         (grok-bullets--unprettify-hbullets)
+         (grok-bullets--unprettify-gb)
+         (grok-bullets--fontify-buffer))))
+   #+end_src
+   With this, the mode is finally complete again and ready for shipping (after
+   some thorough testing, of course).
+* Quick Reference
   For the impatient, here is a list of all symbols with their original names, in
-  order of appearance in the [[A guided Tour][guided tour]] above.  Implementation of functions is
+  order of appearance in the [[A Guided Tour][guided tour]] above.  Implementation of functions is
   often addressed later in dedicated sections, with the first mention usually
   showing where it is utilized instead.
 
-  * Defining a minor mode ::
+  * Defining a Minor Mode ::
     + ~superstar-kit-mode~ (minor mode)
     + ~superstar-kit~ (group)
   * Setting up Font Lock ::
     + ~superstar-kit--update-font-lock-keywords~ (private function)
     + ~superstar-kit--font-lock-keywords~ (private buffer local variable)
     + ~superstar-kit--fontify-buffer~ (private function)
-  * Defining Font Lock keywords ::
+  * Defining Font Lock Keywords ::
     + ~superstar-kit-remove-leading-chars~ (custom variable)
     + ~superstar-kit--prettify-main-hbullet~ (private function)
     + ~superstar-kit--prettify-leading-hbullets~ (private function)
     + ~superstar-kit--make-invisible~ (private function)
-    + The quintessential prettifier: ~--prettify-main-hbullet~ ::
+    + The Quintessential Prettifier: ~--prettify-main-hbullet~ ::
       - ~superstar-kit--heading-level~ (private function)
       - ~superstar-kit-header-bullet~ (face)
-    + More prettifiers ::
+    + More Prettifiers ::
       - ~superstar-kit-leading~ (face)
       - ~superstar-kit-leading-bullet~ (custom variable)
       - ~superstar-kit-leading-fallback~ (custom variable)
       - ~superstar-kit--lbullet~ (private function)
-  * Custom variables: interfacing to the end user ::
+  * Custom Variables: Interfacing to the End User ::
     + ~superstar-kit-headline-bullets-list~ (custom variable)
     + ~superstar-kit-cycle-headline-bullets~ (custom variable)
     + ~superstar-kit--nth-headline-bullet~ (private function)
     + ~superstar-kit--hbullets-length~ (private function)
     + ~superstar-kit--hbullet~ (private function)
-    + Advanced custom functionality ::
+    + Advanced Custom Functionality ::
       - ~superstar-kit--set-lbullet~ (private function)
       - ~superstar-kit--validate-hcycle~ (private function)
-  * Hiding and the invisibility spec ::
+  * Hiding and the Invisibility Spec ::
     + ~grok-bullets-hide~ (symbol)
-  * Disabling a mode: cleaning up ::
+  * Disabling a Mode: Cleaning up ::
     + ~superstar-kit--unprettify-hbullets~ (private function)
     + ~superstar-kit-restart~ (interactive function)
 
-* Appendix
-  #  LocalWords:  Grokbold fontification prettifiers prettifier accessors
-#  LocalWords:  accessor unprettifier
+* NEWS
+
+* Archive
+
+  #  LocalWords:  Grokbold fontification prettifiers prettifier accessors cdr
+  #  LocalWords:  accessor unprettifier

@@ -19,8 +19,6 @@
      "mode".  ~org-mode~ \to ~Org~, ~outline-mode~ \to ~Outline~, etc.
  * [ ]  ~M-x replace-string~ ~M-PKG~ with the name of the package the
    mode belongs to (~org~ for Org)
- * [ ]  ~M-x replace-string~ ~M-NAME~ with the name of the mode as a
-   lisp symbol (~org-mode~ for Org)
  * [ ] ~M-x replace-string~ ~STAR~ with the kind of character used for
    headings in your target format.
    + A generic name may be ~heading char~.

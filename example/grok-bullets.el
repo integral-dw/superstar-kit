@@ -151,6 +151,66 @@ variable for your changes to take effect."
                     :format "\n%t: %v\n"
                     :value ?.))
 
+(defcustom grok-bullets-priority-icons
+  '(("　" ?\s) ("　○" ?○) ("　❔" ??) ("　❗" ?!))
+  "List of icons used in Grok blocks.
+It can contain any number of icons, the Nth entry usually
+corresponding to the icon used for priority N.
+
+Every entry in this list can either be a character or a cons
+cell.  Characters are used as simple, verbatim replacements of
+the headline character for every display (be it graphical or
+terminal).  If the list element is a cons cell, it should be a
+proper list of the form
+\(COMPOSE-STRING CHARACTER)
+
+where COMPOSE-STRING should be a string according to the rules of
+the third argument of ‘compose-region’.  It will be used to
+compose the specific priority icon.  CHARACTER is the fallback
+character used in terminal displays, where composing characters
+cannot be relied upon.
+
+You should re-enable Grok Bullets after changing this variable
+for your changes to take effect."
+  :group 'grok-bullets
+  :type '(repeat (choice
+                  (character :value ?!
+                             :format "Icon: %v\n"
+                             :tag "Simple icon")
+                  (list :tag "Advanced string and fallback"
+                        (string :value "!"
+                                :format "String of characters to compose: %v")
+                        (character :value ?!
+                                   :format "Fallback character for terminal: %v\n")))))
+
+(defcustom grok-bullets-gb-delimiter ?»
+  "Character to delimit Grok block lines.
+This variable is a character replacing the default greater-than
+in terminal displays instead of ‘grok-bullets-leading-bullet’.
+
+You should re-enable Grok Bullets after changing this
+variable for your changes to take effect."
+  :group 'grok-bullets
+  :type '(character :tag "Character to display"
+                    :format "\n%t: %v\n"
+                    :value ?>))
+
+(defcustom grok-bullets-priority-faces
+  '((:foreground "gray70" :slant italic)
+    default
+    (:weight bold)
+    (:weight bold :foreground "red3"))
+  "Faces to use for Grok block lines of a given priority.
+
+Should a Grok block line have a higher priority than the highest
+specified by this variable, the highest available is used."
+  :group 'grok-bullets
+  :type '(repeat
+          (choice :tag "Face spec"
+                  (face :value default)
+                  (plist :key-type (symbol :tag "Property")
+                         :tag "Face properties"))))
+
 
 ;;; Other Custom Variables
 
@@ -222,8 +282,44 @@ modifications.  Every specified face property will replace those
 currently in place."
   :group 'grok-bullets)
 
+(defface grok-bullets-priority-icon
+  '((default . (:inherit default)))
+  "Face used to display prettified Grok block icons."
+  :group 'grok-bullets)
+
+
 
 ;;; Accessor Functions
+
+(defun grok-bullets--priority ()
+  "Return the priority of the Grok block line."
+  (let ((token (match-string 1)))
+    (string-to-number
+     (substring token 1 (1- (length token))))))
+
+(defun grok-bullets--gb-icon (priority)
+  "Obtain Grok block icon for the given PRIORITY.
+
+If PRIORITY is greater than the number of icons specified in
+‘grok-bullets-priority-icons’, return the highest priority
+icon."
+  (let* ((priority (min priority
+                        (1- (length grok-bullets-priority-icons))))
+         (entry (elt grok-bullets-priority-icons priority)))
+    (cond
+     ((characterp entry)
+      entry)
+     ((display-graphic-p)
+      (elt entry 0))
+     (t
+      (elt entry 1)))))
+
+(defun grok-bullets--gb-face ()
+  "Return the appropriate face to use for the given priority."
+  (let* ((priority (grok-bullets--priority))
+         (max-prio (1- (length grok-bullets-priority-faces))))
+    (elt grok-bullets-priority-faces
+         (min priority max-prio))))
 
 (defun grok-bullets--hbullets-length ()
   "Return the length of ‘grok-bullets-headline-bullets-list’."
@@ -295,6 +391,19 @@ used instead of the regular leading bullet to avoid errors."
                       (grok-bullets--lbullet)))
     'grok-bullets-leading))
 
+(defun grok-bullets--prettify-gb-priority ()
+  "Prettify the priority of a Grok block line."
+  (let ((priority (grok-bullets--priority)))
+    (compose-region (match-beginning 1) (match-end 1)
+                    (grok-bullets--gb-icon priority)))
+  'grok-bullets-priority-icon)
+
+(defun grok-bullets--prettify-gb-delim ()
+  "Prettify the delimiter of a Grok block line."
+  (compose-region (match-beginning 2) (match-end 2)
+                  grok-bullets-gb-delimiter)
+  'grok-bullets-priority-icon)
+
 (defun grok-bullets--make-invisible (subexp)
   "Make part of the text matched by the last search invisible.
 SUBEXP, a number, specifies which parenthesized expression in the
@@ -310,6 +419,13 @@ last regexp.  If there is no SUBEXPth pair, do nothing."
   (save-excursion
     (goto-char (point-min))
     (while (re-search-forward "^~+ " nil t)
+      (decompose-region (match-beginning 0) (match-end 0)))))
+
+(defun grok-bullets--unprettify-gb ()
+  "Revert visual tweaks made to grok blocks in current buffer."
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward "^\\[[0-9]+\\]> " nil t)
       (decompose-region (match-beginning 0) (match-end 0)))))
 
 
@@ -328,7 +444,11 @@ cleanup routines."
                '((2 (grok-bullets--prettify-leading-hbullets)
                     t)))
            ,@(when grok-bullets-remove-leading-chars
-               '((2 (grok-bullets--make-invisible 2))))))))
+               '((2 (grok-bullets--make-invisible 2)))))
+          ("^\\(?1:\\[[0-9]+\\]\\)\\(?2:>\\)\\(?3: .*\\)$"
+           (1 (grok-bullets--prettify-gb-priority))
+           (2 (grok-bullets--prettify-gb-delim))
+           (3 (grok-bullets--gb-face))))))
 
 (defun grok-bullets--fontify-buffer ()
   "Fontify the buffer."
@@ -359,6 +479,7 @@ cleanup routines."
     (remove-from-invisibility-spec '(grok-bullets-hide))
     (font-lock-remove-keywords nil grok-bullets--font-lock-keywords)
     (grok-bullets--unprettify-hbullets)
+    (grok-bullets--unprettify-gb)
     (grok-bullets--fontify-buffer))))
 
 (provide 'grok-bullets)
