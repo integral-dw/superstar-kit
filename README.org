@@ -6,23 +6,23 @@
     + *[[#this-package-is-not-a-package][This "Package" is NOT a Package]]:* Mission statement.
   * *[[#a-guided-tour][A Guided Tour]]:* How to use this template explained using an imaginary
     example.
-    + *[[#defining-a-minor-mode][Defining a Minor Mode]]:*
-    + *[[#setting-up-font-lock][Setting up Font Lock]]:*
-    + *[[#defining-font-lock-keywords][Defining Font Lock Keywords]]:*
-    + *[[#prettifiers-and-compose-region][Prettifiers and compose-region]]:*
+    + *[[#defining-a-minor-mode][Defining a Minor Mode]]:* Getting started.
+    + *[[#setting-up-font-lock][Setting up Font Lock]]:* Wrestling with boilerplate.
+    + *[[#defining-font-lock-keywords][Defining Font Lock Keywords]]:* Adding features.
+    + *[[#prettifiers-and-compose-region][Prettifiers and compose-region]]:* Implementing features explicitly.
       - *[[#the-quintessential-prettifier---prettify-main-hbullet][The Quintessential Prettifier: --prettify-main-hbullet]]*
       - *[[#more-prettifiers][More Prettifiers]]*
-    + *[[#custom-variables-interfacing-to-the-end-user][Custom Variables: Interfacing to the End User]]:*
-      - *[[#advanced-custom-functionality][Advanced Custom Functionality]]:*
-    + *[[#hiding-and-the-invisibility-spec][Hiding and the Invisibility Spec]]:*
-    + *[[#disabling-a-mode-cleaning-up][Disabling a Mode: Cleaning up]]:*
+    + *[[#custom-variables-interfacing-to-the-end-user][Custom Variables: Interfacing to the End User]]:* Adding Options.
+      - *[[#advanced-custom-functionality][Advanced Custom Functionality]]:* Creating decent menus for the Custom interface.
+    + *[[#hiding-and-the-invisibility-spec][Hiding and the Invisibility Spec]]:* Removing clutter from view.
+    + *[[#disabling-a-mode-cleaning-up][Disabling a Mode: Cleaning up]]:* Exiting a minor mode (gracefully).
   * *[[#extending-the-minor-mode][Extending the Minor Mode]]:* Extending the bare-bones minor mode (an
     example).
-    + *[[#beginning-with-a-vision][Beginning with a Vision]]:*
-    + *[[#defining-a-new-keyword][Defining a New Keyword]]:*
-    + *[[#prettifiers-accessors-variables][Prettifiers, Accessors, Variables]]:*
-    + *[[#faces][Faces]]:*
-    + *[[#cleaning-up][Cleaning up]]:*
+    + *[[#beginning-with-a-vision][Beginning with a Vision]]:* Drafting new features.
+    + *[[#defining-a-new-keyword][Defining a New Keyword]]:* Locating new syntax elements.
+    + *[[#prettifiers-accessors-variables][Prettifiers, Accessors, Variables]]:* Implementing a new feature.
+    + *[[#faces][Faces]]:* Tweaking the look.
+    + *[[#cleaning-up][Cleaning up]]:* Disabling the new feature on exit.
   * *[[#quick-reference][Quick Reference]]:* Where each symbol is first used in the guided tour.
   * *[[#news][NEWS]]:* Updates of note.
   * *[[#archive][Archive]]:* Yesterday's NEWS.
